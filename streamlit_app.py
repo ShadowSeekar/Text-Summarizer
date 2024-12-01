@@ -38,8 +38,8 @@ def llm_pipeline(filepath):
 @st.cache_data
 
 def displayPDF(file):
-    if file is not None:
-    pdf_reader = PdfReader(pdf) # read your PDF file
+    #if file is not None:
+    pdf_reader = PdfReader(file) # read your PDF file
     # extract the text data from your PDF file after looping through its pages with the .extract_text() method
     text_data= ""
     for page in pdf_reader.pages: # for loop method

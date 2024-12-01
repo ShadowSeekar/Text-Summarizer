@@ -37,14 +37,11 @@ def llm_pipeline(filepath):
 
 @st.cache_data
 
-@st.cache_resource(ttl="1h")
-def displayPDF(pdfile):
-    with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txt sum/file", pdfile.name), "wb") as f:
-        f.write(uploaded_file.getvalue())
+#def displayPDF(pdfile):
+    
 
 #    base64_pdf = base64.b64encode(file.read()).decode('utf-8')
-    pdf_display = F'<iframe src="http://localhost:8900/{file.name}" width="100%" height="600" type="application/pdf"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
+    
 
 st.set_page_config(layout="wide")
 
@@ -69,8 +66,14 @@ def main():
                 temp_file.write(uploaded_file.read())
 
             with col1:
+                @st.cache_resource(ttl="1h")
                 st.info("Uploaded File")
-                pdf_view = displayPDF(uploaded_file)
+                with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name), "wb") as f:
+                    f.write(uploaded_file.getvalue())
+                pdf_display = F'<iframe src="http://localhost:8900/{pdfile.name}" width="100%" height="600" type="application/pdf"></iframe>'
+                st.markdown(pdf_display, unsafe_allow_html=True)
+                
+                #pdf_view = displayPDF(uploaded_file)
 
             with col2:
                 summary = llm_pipeline(filepath)

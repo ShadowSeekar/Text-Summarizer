@@ -61,15 +61,17 @@ def main():
             col1, col2 = st.columns(2)
 
             # Save the uploaded file to the directory
-            filepath = os.path.join(data_dir, uploaded_file.name)
-            with open(filepath, "wb") as temp_file:
-                temp_file.write(uploaded_file.read())
+            #filepath = os.path.join(data_dir, uploaded_file.name)
+            #with open(filepath, "wb") as temp_file:
+            #    temp_file.write(uploaded_file.read())
+            filepath = os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name)
+            with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name), "wb") as f:
+                    f.write(uploaded_file.getvalue())
 
             with col1:
                 @st.cache_resource(ttl="1h")
                 #st.info("Uploaded File")
-                with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name), "wb") as f:
-                    f.write(uploaded_file.getvalue())
+                
                 pdf_display = F'<iframe src="http://localhost:8900/{pdfile.name}" width="100%" height="600" type="application/pdf"></iframe>'
                 st.markdown(pdf_display, unsafe_allow_html=True)
                 

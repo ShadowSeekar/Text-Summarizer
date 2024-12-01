@@ -129,7 +129,7 @@ def main():
                 
                 word_tokenizer = Tokenizer()
 
-                model_path ='c1_lstm_model_acc_0.854.h5'
+                model_path ='converted_model.keras'
                 pretrained_lstm_model = load_model(model_path)
                 unseen_processed = preprocess_text(summary)
                 unseen_tokenized = word_tokenizer.texts_to_sequences(unseen_processed)

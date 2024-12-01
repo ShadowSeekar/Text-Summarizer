@@ -39,8 +39,8 @@ def llm_pipeline(filepath):
 
 def stream_txt(txt):
     for word in txt:
-        yield word + " "
-        time.sleep(0.04)
+        yield word
+        time.sleep(0.02)
 
 @st.cache_data
 

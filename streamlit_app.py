@@ -1,105 +1,71 @@
-import os
-import streamlit as st
+import streamlit as st 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader
-from transformers import T5Tokenizer, T5ForConditionalGeneration, pipeline
+from langchain.document_loaders import PyPDFLoader, DirectoryLoader
+from langchain.chains.summarize import load_summarize_chain
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+from transformers import pipeline
 import torch
 import base64
 
-# Load model and tokenizer
+
 checkpoint = "MBZUAI/LaMini-Flan-T5-248M"
 tokenizer = T5Tokenizer.from_pretrained(checkpoint)
-base_model = T5ForConditionalGeneration.from_pretrained(
-    checkpoint, device_map="auto", torch_dtype=torch.float32
-)
+base_model = T5ForConditionalGeneration.from_pretrained(checkpoint, device_map='auto', torch_dtype=torch.float32)
 
-# Maximum token length for the model
-MAX_TOKEN_LENGTH = 512
-
-# Function to preprocess the PDF
-def file_preprocessing(file_path):
-    loader = PyPDFLoader(file_path)
+def file_preprocessing(file):
+    loader =  PyPDFLoader(file)
     pages = loader.load_and_split()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=50)
     texts = text_splitter.split_documents(pages)
-    
-    # Combine all text pieces and split into chunks
-    final_texts = "".join([text.page_content for text in texts])
-    
-    # Split the text into chunks that fit the token limit
-    chunks = []
-    current_chunk = ""
-    for text in final_texts.split("\n\n"):  # Split into paragraphs
-        # Tokenize text and check length
-        tokenized = tokenizer.encode(text, return_tensors="pt")
-        if tokenized.shape[1] + tokenizer.encode(current_chunk, return_tensors="pt").shape[1] > MAX_TOKEN_LENGTH:
-            if current_chunk:
-                chunks.append(current_chunk)
-            current_chunk = text
-        else:
-            current_chunk += "\n\n" + text
-    
-    if current_chunk:
-        chunks.append(current_chunk)  # Append the last chunk
-    
-    return chunks
+    final_texts = ""
+    for text in texts:
+        print(text)
+        final_texts = final_texts + text.page_content
+    return final_texts
 
-# Summarization pipeline
-def llm_pipeline(input_chunks):
+def llm_pipeline(filepath):
     pipe_sum = pipeline(
-        "summarization",
-        model=base_model,
-        tokenizer=tokenizer,
-        max_length=500,
-        min_length=50,
-    )
-    summaries = []
-    for chunk in input_chunks:
-        summary = pipe_sum(chunk)
-        summaries.append(summary[0]["summary_text"])
-    return " ".join(summaries)
+        'summarization',
+        model = base_model,
+        tokenizer = tokenizer,
+        max_length = 500, 
+        min_length = 50)
+    input_text = file_preprocessing(filepath)
+    result = pipe_sum(input_text)
+    result = result[0]['summary_text']
+    return result
 
-# Function to display PDF in the app
-def display_pdf(file_path):
-    with open(file_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode("utf-8")
-    pdf_display = f"""
-    <iframe
-        src="data:application/pdf;base64,{base64_pdf}"
-        width="100%"
-        height="600"
-        style="border: none;"
-    ></iframe>
-    """
-    st.components.v1.html(pdf_display, height=600)
+@st.cache_data
 
-# Streamlit app
+def displayPDF(file):
+    with open(file, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
 st.set_page_config(layout="wide")
 
 def main():
-    st.title("Document Summarization App using Language Model")
-    uploaded_file = st.file_uploader("Upload your PDF file", type=["pdf"])
-
-    # Ensure directory exists
-    data_dir = "data"
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
-
+    st.title("Document Summarization App using Langauge Model")
+    uploaded_file = st.file_uploader("Upload your PDF file", type=['pdf'])
     if uploaded_file is not None:
-        # Save the uploaded file
-        file_path = os.path.join(data_dir, uploaded_file.name)
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.read())
-
-        st.info("Uploaded File")
-        display_pdf(file_path)
-
         if st.button("Summarize"):
-            with st.spinner("Summarizing..."):
-                input_chunks = file_preprocessing(file_path)
-                summary = llm_pipeline(input_chunks)
-                st.success("Summarization Complete!")
-                st.write(summary)
+            col1, col2 = st.columns(2)
+            filepath = "data/"+uploaded_file.name
+            with open(filepath, "wb") as temp_file:
+                temp_file.write(uploaded_file.read())
+            with col1:
+                st.info("Uploaded File")
+                pdf_view = displayPDF(filepath)
+            with col2:
+                summary = llm_pipeline(filepath)
+                st.info("Summarization Complete")
+                st.success(summary)
+
+
+
+
+
 
 if __name__ == "__main__":
     main()

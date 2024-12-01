@@ -8,6 +8,36 @@ from PyPDF2 import PdfReader
 import torch
 import base64
 import time
+import os
+
+
+import pandas as pd
+import numpy as np
+import re
+import nltk
+from nltk.corpus import stopwords
+from keras.models import load_model
+nltk.download('stopwords')
+
+TAG_RE = re.compile(r'<[^>]+>')
+def remove_tags(text):
+    '''Removes HTML tags: replaces anything between opening and closing <> with empty space'''
+    return TAG_RE.sub('', text)
+
+def preprocess_text(sen):
+    '''Cleans text data up, leaving only 2 or more char long non-stepwords composed of A-Z & a-z only in lowercase'''
+    sentence = sen.lower()
+    sentence = remove_tags(sentence)
+    sentence = re.sub('[^a-zA-Z]', ' ', sentence)
+    sentence = re.sub(r"\s+[a-zA-Z]\s+", ' ', sentence)
+    sentence = re.sub(r'\s+', ' ', sentence)
+    pattern = re.compile(r'\b(' + r'|'.join(stopwords.words('english')) + r')\b\s*')
+    sentence = pattern.sub('', sentence)
+
+    return sentence
+
+
+
 
 
 checkpoint = "MBZUAI/LaMini-Flan-T5-248M"
@@ -60,7 +90,7 @@ def displayPDF(file):
 
 st.set_page_config(layout="wide")
 
-import os
+
 
 def main():
     st.title("Document Summarization App using Language Model")
@@ -94,6 +124,18 @@ def main():
                 
                 st.write(stream_txt(summary))
                 st.success("Summarization Complete")
+                
+                word_tokenizer = Tokenizer()
+
+                model_path ='./c1_lstm_model_acc_0.854.h5'
+                pretrained_lstm_model = load_model(model_path)
+                unseen_processed = preprocess_text(summary)
+                unseen_tokenized = word_tokenizer.texts_to_sequences(unseen_processed)
+                unseen_padded = pad_sequences(unseen_tokenized, padding='post', maxlen=100)
+                unseen_sentiments = pretrained_lstm_model.predict(unseen_padded)
+                res = np.round(unseen_sentiments*10,1)
+                st.markdown(res)
+                
 
 
 

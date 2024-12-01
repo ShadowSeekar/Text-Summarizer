@@ -65,7 +65,7 @@ def main():
         os.makedirs(data_dir)
 
     if uploaded_file is not None:
-        st.info("Uploaded File")
+        st.info("File Uploaded")
         if st.button("Summarize"):
             col1, col2 = st.columns(2)
 

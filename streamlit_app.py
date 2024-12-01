@@ -68,10 +68,12 @@ def main():
             with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name), "wb") as f:
                     f.write(uploaded_file.getvalue())
 
+            pdf_display = F'<iframe src="http://localhost:8900/{pdfile.name}" width="100%" height="600" type="application/pdf"></iframe>'
+
             with col1:
                 @st.cache_resource(ttl="1h")
                 #st.info("Uploaded File")
-                pdf_display = F'<iframe src="http://localhost:8900/{pdfile.name}" width="100%" height="600" type="application/pdf"></iframe>'
+                
                 st.markdown(pdf_display, unsafe_allow_html=True)
                 
                 #pdf_view = displayPDF(uploaded_file)

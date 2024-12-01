@@ -43,7 +43,7 @@ def llm_pipeline(filepath):
 #    base64_pdf = base64.b64encode(file.read()).decode('utf-8')
     
 
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 import os
 

@@ -2,4 +2,5 @@ streamlit
 langchain==0.0.208
 pypdf2
 transformers
-torch
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+base64

@@ -39,8 +39,9 @@ def llm_pipeline(filepath):
 
 @st.cache_resource(ttl="1h")
 def displayPDF(pdfile):
-    with open(os.path.join("C:\Users\raoha\OneDrive\Desktop\txt sum\file", pdfile.name), "wb") as f:
+    with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txt sum/file", pdfile.name), "wb") as f:
     f.write(uploaded_file.getvalue())
+
 #    base64_pdf = base64.b64encode(file.read()).decode('utf-8')
     pdf_display = F'<iframe src="http://localhost:8900/{file.name}" width="100%" height="600" type="application/pdf"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)

@@ -1,0 +1,5 @@
+streamlit
+langchain==0.0.208
+pypdf2
+transformers
+torch

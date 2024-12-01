@@ -13,17 +13,39 @@ base_model = T5ForConditionalGeneration.from_pretrained(
     checkpoint, device_map="auto", torch_dtype=torch.float32
 )
 
+# Maximum token length for the model
+MAX_TOKEN_LENGTH = 512
+
 # Function to preprocess the PDF
 def file_preprocessing(file_path):
     loader = PyPDFLoader(file_path)
     pages = loader.load_and_split()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=50)
     texts = text_splitter.split_documents(pages)
+    
+    # Combine all text pieces and split into chunks
     final_texts = "".join([text.page_content for text in texts])
-    return final_texts
+    
+    # Split the text into chunks that fit the token limit
+    chunks = []
+    current_chunk = ""
+    for text in final_texts.split("\n\n"):  # Split into paragraphs
+        # Tokenize text and check length
+        tokenized = tokenizer.encode(text, return_tensors="pt")
+        if tokenized.shape[1] + tokenizer.encode(current_chunk, return_tensors="pt").shape[1] > MAX_TOKEN_LENGTH:
+            if current_chunk:
+                chunks.append(current_chunk)
+            current_chunk = text
+        else:
+            current_chunk += "\n\n" + text
+    
+    if current_chunk:
+        chunks.append(current_chunk)  # Append the last chunk
+    
+    return chunks
 
 # Summarization pipeline
-def llm_pipeline(input_text):
+def llm_pipeline(input_chunks):
     pipe_sum = pipeline(
         "summarization",
         model=base_model,
@@ -31,11 +53,11 @@ def llm_pipeline(input_text):
         max_length=500,
         min_length=50,
     )
-    results = []
-    for chunk in input_text.split("\n\n"):  # Split into manageable chunks
+    summaries = []
+    for chunk in input_chunks:
         summary = pipe_sum(chunk)
-        results.append(summary[0]["summary_text"])
-    return " ".join(results)
+        summaries.append(summary[0]["summary_text"])
+    return " ".join(summaries)
 
 # Function to display PDF in the app
 def display_pdf(file_path):
@@ -74,8 +96,8 @@ def main():
 
         if st.button("Summarize"):
             with st.spinner("Summarizing..."):
-                input_text = file_preprocessing(file_path)
-                summary = llm_pipeline(input_text)
+                input_chunks = file_preprocessing(file_path)
+                summary = llm_pipeline(input_chunks)
                 st.success("Summarization Complete!")
                 st.write(summary)
 

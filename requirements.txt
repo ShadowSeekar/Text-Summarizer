@@ -10,3 +10,8 @@ pypdf
 tiktoken
 streamlit
 PyPDF2
+
+
+keras
+nltk
+scikit-learn

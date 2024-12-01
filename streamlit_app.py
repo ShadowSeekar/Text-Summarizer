@@ -36,6 +36,11 @@ def llm_pipeline(filepath):
     result = result[0]['summary_text']
     return result
 
+def stream_txt(txt):
+    for word in txt:
+        yield word + " "
+        time.sleep(0.04)
+
 @st.cache_data
 
 def displayPDF(file):
@@ -45,10 +50,8 @@ def displayPDF(file):
     text_data= ""
     for page in pdf_reader.pages: # for loop method
         text_data+= page.extract_text()
-    #st.markdown(text_data)
-    for word in text_data:
-        yield word + " "
-        time.sleep(0.04)
+    st.write(stream_txt(text_data))
+    
 #    with open(file, "rb") as f:
 #        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
 #    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'

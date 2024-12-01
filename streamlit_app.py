@@ -74,13 +74,13 @@ def main():
                 temp_file.write(uploaded_file.read())
 
             with col1:
-                st.markdown("**:blue[File Content]**") 
+                st.header("**:blue[File Content]**", divider="orange") 
                 st.info("Uploaded File")
                 pdf_view = displayPDF(uploaded_file)
                 
 
             with col2:
-                st.markdown("**:blue[Summary]**")
+                st.header("**:blue[Summary]**", divider="orange")
                 summary = llm_pipeline(filepath)
                 st.info("Summarization Complete")
                 st.success(summary)

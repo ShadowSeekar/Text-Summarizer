@@ -40,7 +40,7 @@ def llm_pipeline(filepath):
 def stream_txt(txt):
     for word in txt:
         yield word
-        time.sleep(0.02)
+        time.sleep(0.01)
 
 @st.cache_data
 
@@ -51,7 +51,7 @@ def displayPDF(file):
     text_data= ""
     for page in pdf_reader.pages: # for loop method
         text_data+= page.extract_text()
-    st.write(stream_txt(text_data))
+    st.write(text_data)
     
 #    with open(file, "rb") as f:
 #        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
@@ -92,7 +92,7 @@ def main():
                 with st.spinner('Please wait...'):
                     summary = llm_pipeline(filepath)
                 
-                st.success(summary)
+                st.success(stream_txt(summary))
                 st.info("Summarization Complete")
 
 

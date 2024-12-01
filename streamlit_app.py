@@ -40,7 +40,7 @@ def llm_pipeline(filepath):
 def displayPDF(file):
     #with open(file, "rb") as f:
     base64_pdf = base64.b64encode(file.read()).decode('utf-8')
-    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></embed>'
     st.markdown(pdf_display, unsafe_allow_html=True)
 
 st.set_page_config(layout="wide")

@@ -72,7 +72,7 @@ def main():
             st.markdown(pdf_display, unsafe_allow_html=True)
 
             with col1:
-                @st.cache_resource(ttl="1h")
+                #@st.cache_resource(ttl="1h")
                 #st.info("Uploaded File")
                 
                 

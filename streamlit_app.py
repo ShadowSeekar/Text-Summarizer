@@ -65,6 +65,7 @@ def main():
         os.makedirs(data_dir)
 
     if uploaded_file is not None:
+        st.info("Uploaded File")
         if st.button("Summarize"):
             col1, col2 = st.columns(2)
 
@@ -75,15 +76,16 @@ def main():
 
             with col1:
                 st.header("**:blue[File Content]**", divider="orange") 
-                st.info("Uploaded File")
+                
                 pdf_view = displayPDF(uploaded_file)
                 
 
             with col2:
                 st.header("**:blue[Summary]**", divider="orange")
                 summary = llm_pipeline(filepath)
-                st.info("Summarization Complete")
+                
                 st.success(summary)
+                st.info("Summarization Complete")
 
 
 

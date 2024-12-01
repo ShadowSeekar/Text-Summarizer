@@ -92,7 +92,7 @@ def main():
                 with st.spinner('Please wait...'):
                     summary = llm_pipeline(filepath)
                 
-                st.success(stream_txt(summary))
+                st.write(stream_txt(summary))
                 st.info("Summarization Complete")
 
 

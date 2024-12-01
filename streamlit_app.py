@@ -82,7 +82,7 @@ def main():
 
             with col2:
                 st.header("**:blue[Summary]**", divider="orange")
-                with st.spinner('Plaese wait...'):
+                with st.spinner('Please wait...'):
                     summary = llm_pipeline(filepath)
                 
                 st.success(summary)

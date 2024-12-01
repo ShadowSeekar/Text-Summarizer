@@ -39,7 +39,7 @@ def llm_pipeline(filepath):
 
 def displayPDF(file):
     #with open(file, "rb") as f:
-    base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    base64_pdf = base64.b64encode(file.read()).decode('utf-8')
     pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)
 
@@ -67,7 +67,7 @@ def main():
 
             with col1:
                 st.info("Uploaded File")
-                pdf_view = displayPDF(filepath)
+                pdf_view = displayPDF(uploaded_file)
 
             with col2:
                 summary = llm_pipeline(filepath)

@@ -1,6 +1,10 @@
-streamlit
-langchain==0.0.208
-pypdf2
+langchain
+sentence_transformers
+torch
+sentencepiece
 transformers
-torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-base64
+accelerate
+chromadb
+pypdf
+tiktoken
+streamlit

@@ -42,9 +42,9 @@ def displayPDF(file):
         pdf_reader = PdfReader(pdf) # read your PDF file
     # extract the text data from your PDF file after looping through its pages with the .extract_text() method
             text_data= ""
-                for page in pdf_reader.pages: # for loop method
-                    text_data+= page.extract_text()
-                st.write(txt_data)
+            for page in pdf_reader.pages: # for loop method
+                text_data+= page.extract_text()
+            st.write(txt_data)
 #    with open(file, "rb") as f:
 #        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
 #    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'

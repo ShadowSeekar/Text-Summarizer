@@ -6,7 +6,7 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration
 from transformers import pipeline
 import torch
 import base64
-
+import os
 
 checkpoint = "MBZUAI/LaMini-Flan-T5-248M"
 tokenizer = T5Tokenizer.from_pretrained(checkpoint)
@@ -45,7 +45,7 @@ def llm_pipeline(filepath):
 
 #st.set_page_config(layout="wide")
 
-import os
+
 
 def main():
     st.title("Document Summarization App using Language Model")

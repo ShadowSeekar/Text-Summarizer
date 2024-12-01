@@ -4,6 +4,7 @@ from langchain.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.chains.summarize import load_summarize_chain
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 from transformers import pipeline
+from PyPDF2 import PdfReader
 import torch
 import base64
 

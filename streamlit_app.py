@@ -93,11 +93,7 @@ def main():
                     summary = llm_pipeline(filepath)
                 
                 st.write(stream_txt(summary))
-                st.info("Summarization Complete")
-
-
-
-
+                st.success("Summarization Complete")
 
 
 

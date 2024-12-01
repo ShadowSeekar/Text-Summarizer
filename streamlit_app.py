@@ -45,18 +45,30 @@ def displayPDF(file):
 
 st.set_page_config(layout="wide")
 
+import os
+
 def main():
-    st.title("Document Summarization App using Langauge Model")
+    st.title("Document Summarization App using Language Model")
     uploaded_file = st.file_uploader("Upload your PDF file", type=['pdf'])
+
+    # Ensure the directory exists
+    data_dir = "data"
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+
     if uploaded_file is not None:
         if st.button("Summarize"):
             col1, col2 = st.columns(2)
-            filepath = "data/"+uploaded_file.name
+
+            # Save the uploaded file to the directory
+            filepath = os.path.join(data_dir, uploaded_file.name)
             with open(filepath, "wb") as temp_file:
                 temp_file.write(uploaded_file.read())
+
             with col1:
                 st.info("Uploaded File")
                 pdf_view = displayPDF(filepath)
+
             with col2:
                 summary = llm_pipeline(filepath)
                 st.info("Summarization Complete")

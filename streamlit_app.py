@@ -7,6 +7,7 @@ from transformers import pipeline
 from PyPDF2 import PdfReader
 import torch
 import base64
+import time
 
 
 checkpoint = "MBZUAI/LaMini-Flan-T5-248M"

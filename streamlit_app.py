@@ -6,7 +6,7 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration
 from transformers import pipeline
 import torch
 import base64
-import os
+
 
 checkpoint = "MBZUAI/LaMini-Flan-T5-248M"
 tokenizer = T5Tokenizer.from_pretrained(checkpoint)
@@ -35,17 +35,17 @@ def llm_pipeline(filepath):
     result = result[0]['summary_text']
     return result
 
-#@st.cache_data
+@st.cache_data
 
-#def displayPDF(pdfile):
-    
+def displayPDF(file):
+    with open(file, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+    st.markdown(pdf_display, unsafe_allow_html=True)
 
-#    base64_pdf = base64.b64encode(file.read()).decode('utf-8')
-    
+st.set_page_config(layout="wide")
 
-#st.set_page_config(layout="wide")
-
-
+import os
 
 def main():
     st.title("Document Summarization App using Language Model")
@@ -61,29 +61,19 @@ def main():
             col1, col2 = st.columns(2)
 
             # Save the uploaded file to the directory
-            #filepath = os.path.join(data_dir, uploaded_file.name)
-            #with open(filepath, "wb") as temp_file:
-            #    temp_file.write(uploaded_file.read())
-            filepath = os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name)
-            with open(os.path.join("C:/Users/raoha/OneDrive/Desktop/txtsum/fileUpload", pdfile.name), "wb") as f:
-                    f.write(uploaded_file.getvalue())
-
-            pdf_display = F'<iframe src="http://localhost:8900/{pdfile.name}" width="100%" height="600" type="application/pdf"></iframe>'
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            filepath = os.path.join(data_dir, uploaded_file.name)
+            with open(filepath, "wb") as temp_file:
+                temp_file.write(uploaded_file.read())
 
             with col1:
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                #@st.cache_resource(ttl="1h")
-                #st.info("Uploaded File")
-                
-                
-                
-                #pdf_view = displayPDF(uploaded_file)
+                st.info("Uploaded File")
+                pdf_view = displayPDF(filepath)
 
             with col2:
                 summary = llm_pipeline(filepath)
                 st.info("Summarization Complete")
                 st.success(summary)
+
 
 
 

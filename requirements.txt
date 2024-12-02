@@ -12,7 +12,7 @@ streamlit
 PyPDF2
 
 tensorflow
-keras
 nltk
 scikit-learn
 tokenizer
+numpy

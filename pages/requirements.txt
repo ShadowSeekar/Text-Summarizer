@@ -1,0 +1,17 @@
+streamlit
+numpy
+#keras
+#keras-preprocessing
+#keras-src
+nltk
+scikit-learn
+tokenizer
+#h5py==3.7.0
+tensorflow>=2.11.0
+#tensorflow-estimator==2.9.0
+#tensorflow-io-gcs-filesystem==0.26.0
+#python-dateutil==2.8.2
+tensorboard
+tensorboard-plugin-wit
+tensorflow-estimator
+scipy
